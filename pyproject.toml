@@ -26,6 +26,7 @@ classifiers = [
 
 [project.scripts]
 baiduocr = "baiduocr.cli:main"
+baiduocr-doc-parse = "baiduocr.doc_parser:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

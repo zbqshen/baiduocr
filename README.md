@@ -6,9 +6,8 @@
 
 - 独立 Python 包和命令行：`baiduocr`
 - 支持 Linux、macOS、Windows、WSL
-- 识别单张图片或批量扫描目录
-- 支持多组百度 OCR 凭据轮换
-- 在额度、QPS、接口限流时自动切换凭据和 OCR endpoint
+- **图片 OCR**：识别单张图片或批量扫描目录，支持多组凭据轮换，自动在额度/QPS 限流时切换凭据和 endpoint
+- **文档解析**：提交 PDF/文档到百度文档解析 API，自动轮询并下载 Markdown/JSON 解析产物，支持多凭证轮替
 - 输出纯文本或 JSON，适合 Hermes 调用
 
 ## 凭据配置
@@ -78,6 +77,22 @@ baiduocr ./images --glob "*.png,*.jpg,*.jpeg" --delay 0.5 --output results.json
 baiduocr ./example.png --config ~/.config/baiduocr/config.json --json
 ```
 
+### 文档解析 (PDF 等)
+
+```bash
+# 独立命令
+baiduocr-doc-parse ./report.pdf --out-dir ./output --json
+
+# 或直接模块调用
+python -m baiduocr.doc_parser ./report.pdf --out-dir ./output
+
+# 多凭证 + 图表分析
+baiduocr-doc-parse ./report.pdf --analysis-chart --recognize-formula
+
+# 生成 llm-wiki ingest 目录结构
+baiduocr-doc-parse ./report.pdf --write-wiki-bundle --wiki-date 2024-01-15
+```
+
 ## Hermes Agent 调用
 
 如果已经安装到环境中，Hermes 可直接调用：
@@ -106,14 +121,17 @@ pytest
 ```text
 baiduocr/
 ├── README.md
-├── SKILL.md
-├── pyproject.toml
+├── scripts/
+│   ├── baiduocr_runner.py
+│   └── baidu_doc_parser.py
 ├── src/baiduocr/
 │   ├── __init__.py
 │   ├── cli.py
-│   └── client.py
+│   ├── client.py
+│   └── doc_parser.py
 └── tests/
-    └── test_client.py
+    ├── test_client.py
+    └── test_doc_parser.py
 ```
 
 ## 说明

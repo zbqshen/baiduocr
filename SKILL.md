@@ -18,12 +18,15 @@ Use this skill when the user wants Baidu image OCR outside the DingTalk project,
 
 - Standalone Python package and CLI under `baiduocr/`
 - Compatible with Windows, Linux, macOS, and WSL
+- **Image OCR** via `baiduocr` CLI — recognize single images or batches with multi-credential rotation and endpoint fallback
+- **Document Parser** via `baiduocr-doc-parse` CLI — submit PDFs/documents to Baidu Brain API, poll for async results, download Markdown/JSON outputs
+- Markdown cleaning utilities for financial content (fupange-style headers/ads/comments removal)
+- Optional llm-wiki ingest bundle generation (`--write-wiki-bundle`)
 - Reads credentials from:
   - `BAIDU_OCR_CREDENTIALS`
   - `BAIDU_OCR_API_KEY` + `BAIDU_OCR_SECRET_KEY`
   - `~/.ding-cli/config.json` (`baidu_ocr_credentials`)
   - `~/.config/baiduocr/config.json`
-- Supports multi-credential rotation and endpoint fallback when Baidu quota/rate limits are hit
 
 ## Install
 
@@ -51,6 +54,12 @@ Directory batch:
 
 ```bash
 baiduocr ./images --glob "*.png,*.jpg" --delay 0.5 --output results.json
+```
+
+Document parse:
+
+```bash
+baiduocr-doc-parse ./report.pdf --out-dir ./output
 ```
 
 ## Hermes usage
