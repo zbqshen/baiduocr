@@ -11,3 +11,5 @@ build/
 htmlcov/
 .idea/
 .vscode/
+baidu_ocr_credentials.json
+work/

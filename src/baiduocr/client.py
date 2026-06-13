@@ -38,6 +38,8 @@ BAIDU_OCR_ROTATE_ERROR_HINTS = (
 )
 
 DEFAULT_CONFIG_PATHS = [
+    Path.cwd() / "baidu_ocr_credentials.json",
+    Path(__file__).resolve().parents[2] / "baidu_ocr_credentials.json",
     Path.home() / ".ding-cli" / "config.json",
     Path.home() / ".config" / "baiduocr" / "config.json",
 ]
@@ -135,6 +137,21 @@ def _read_credentials_from_config(config_path: Path | None = None) -> str:
             value = str(data.get(key, "")).strip()
             if value:
                 return value
+        # Compatibility with the stocker skill asset copied to this repo:
+        # {"credentials": [{"api_key": "...", "secret_key": "...", "label": "..."}, ...]}
+        # Return JSON so _parse_credentials_blob can consume the list without exposing secrets.
+        credentials = data.get("credentials")
+        if isinstance(credentials, list) and credentials:
+            normalized = []
+            for item in credentials:
+                if not isinstance(item, dict):
+                    continue
+                api_key = str(item.get("api_key") or item.get("client_id") or "").strip()
+                secret_key = str(item.get("secret_key") or item.get("client_secret") or "").strip()
+                if api_key and secret_key:
+                    normalized.append({"api_key": api_key, "secret_key": secret_key})
+            if normalized:
+                return json.dumps(normalized, ensure_ascii=False)
     return ""
 
 
